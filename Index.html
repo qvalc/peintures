@@ -1,18 +1,16 @@
 <!doctype html>
 <html lang="fr">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Raccords plomberie — Galerie</title>
+  <title>Peinture — Galerie</title>
   <link rel="stylesheet" href="styles.css">
-
 </head>
 
 <body>
-
   <header class="top">
-    <img src="logo-site.png" alt="Raccords plomberie" class="logo">
+    <!-- Mets ton logo peinture ici (ou garde un placeholder) -->
+    <img src="logo-site.png" alt="Peinture" class="logo">
 
     <!-- Desktop/tablette -->
     <div id="catButtons" class="catButtons"></div>
@@ -26,271 +24,87 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <script>
-    const HIDE_A_SOUDER = true; // true = masqué, false = visible
+    /* =========================
+       1) DONNÉES "PEINTURE"
+       ========================= */
 
-    /** Images */
+    /** Images par catégorie
+     *  IMPORTANT : sur un site statique, on ne peut pas "lister un dossier".
+     *  Donc on garde une liste (ou on utilisera plus tard un manifest JSON).
+     */
     const IMAGES = {
-      "a-souder": [
-        "coude-femelle.png", "coude-male.png", "coude-union-femelle.png", "coude-union-male.png",
-        "rac-femelle.png", "rac-male.png", "union-femelle.png", "union-male.png"
-      ],
-
-      "acc-tube-polyethylene/huot": ["coude.png", "manchon.png", "rac-femelle.png", "rac-male.png", "te.png"],
-      "acc-tube-polyethylene/plasson": ["coude.png", "manchon.png", "rac-femelle.png", "rac-male.png", "te.png"],
-      "acc-tube-polyethylene/rexuo": ["coude.png", "manchon.png", "rac-femelle.png", "rac-male.png", "te.png"],
-
-      "bicones": ["coude-femelle.png", "coude-ff.png", "coude-male.png", "manchon-reduit.png", "manchon.png", "rac-femelle.png", "rac-male.png", "te-egal.png"],
-
-      "laiton": [
-        "allonge.png", "bouchon.png", "coude-f-f.png", "coude-m-f.png", "coude-union.png",
-        "laiton-bonnet.png", "laiton-culasse.png", "laiton-manchon.png", "nipple-reduite.png", "nipple.png",
-        "rac-union.png", "reduction-f-f.png", "reduction-f-m.png", "reduction-m-f.png", "te-egal.png", "tes-1.png", "tes-2.png",
-        "tetine-femelle.png", "tetine-male.png",
-
-      ],
-
-      "collecteurs": [
-        "collecteur-2-bleu.png", "collecteur-2-rouge.png",
-        "collecteur-3-bleu.png", "collecteur-3-rouge.png",
-        "collecteur-4-bleu.png", "collecteur-4-rouge.png",
-        "collecteur-5-bleu.png", "collecteur-5-rouge.png",
-        "collecteur-6-bleu.png", "collecteur-6-rouge.png"
-      ],
-
-      "geka": ["rac-geka-F.png", "rac-geka-M.png", "rac-geka-T.png"],
-
-      "pex-a-sertir": [
-        "bouchon.png", "coude-egal.png", "coude-femelle-el.png", "coude-femelle.png", "coude-male.png",
-        "culasse-double.png", "culasse-simple.png", "manchon.png", "rac-femelle-el.png", "raccord-femelle.png", "raccord-male.png",
-        "te-egal.png", "te-femelle.png", "te-male.png", "te-reduit.png"
-      ],
-
-      "pex": [
-        "bouchon.png", "coude-f-el.png", "coude-femelle.png", "coude-male.png", "culasse-doucle.png", "culasse-simple.png", "manchon.png",
-        "raccord-f-el.png", "raccord-femelle.png", "raccord-male.png", "te-femelle.png", "te-male.png", "te-reduit.png", "te.png", "vanne.png"
-      ],
-
-      "push": [
-        "bague-de-montage.png", "bouchon.png", "coude-egal.png", "coude-femelle-el.png", "coude-male.png", "culasse.png", "insert.png",
-        "jonction-reduite.png", "manchon.png", "rac-femelle-el.png", "rac-male.png", "te-egal.png", "te-femelle.png", "te-male.png",
-        "te-reduit.png", "vanne-ecrou-libre.png"
-      ],
-
-      "tube-alpex": [
-        "Tube-Alpex.png",
-        "Tube-Alpex-isolé-rouge.png",
-        "Tube-Alpex-isolé-bleu.png",
-        "Tube-Alpex-gaine-rouge.png",
-        "Tube-Alpex-gaine-bleue.png"
+      "levis": [
+        "Amb.lak-sat.jpg",
+        "Amb.lak.mat.jpg",
+        "Amb.mur-extra-mat.jpg",
+        "Amb.mur-metallic.jpg",
+        "Amb.mur-satin.jpg",
+        "Duo-sat-mix.jpg",
+        "Easyclean-cuisine-sdb-mat.jpg",
+        "Easyclean-cuisine-sdb-sat.jpg",
+        "Easyclean-satin.jpg",
+        "Expert-mur.jpg",
+        "Facade-exp-levis-mix.png",
+        "Ferro-decor.jpg",
+        "Lak-exp-high-gloss.png",
+        "Lak-exp-sat.jpg",
+        "Lak-rapide-exter.jpg",
+        "Lak-reg-sat.jpg",
+        "Levis-floor-regul.jpg"
       ]
     };
 
-    /** ✅ NOMS D’AFFICHAGE PERSONNALISÉS */
+    /** Libellés propres (optionnel)
+     *  Si tu veux afficher un nom plus “marketing” que le nom du fichier.
+     *  Sinon, le code enlève l’extension et remplace les "-" par des espaces.
+     */
     const DISPLAY_NAMES = {
-      /* =======================
-         LAITON
-      ======================= */
-      "laiton/allonge.png": "Allonge",
-      "laiton/bouchon.png": "Bouchon",
-      "laiton/coude-f-f.png": "Coude femelle / femelle",
-      "laiton/coude-m-f.png": "Coude mâle / femelle",
-      "laiton/coude-union.png": "Coude union",
-      "laiton/laiton-bonnet.png": "Bonnet",
-      "laiton/laiton-culasse.png": "Culasse",
-      "laiton/laiton-manchon.png": "Manchon",
-      "laiton/nipple-reduite.png": "Nipple réduit",
-      "laiton/nipple.png": "Nipple",
-      "laiton/rac-union.png": "Raccord union",
-      "laiton/reduction-f-f.png": "Réduction femelle / femelle",
-      "laiton/reduction-f-m.png": "Réduction femelle / mâle",
-      "laiton/reduction-m-f.png": "Réduction mâle / femelle",
-      "laiton/te-egal.png": "Té égal",
-      "laiton/tes-1.png": "Té écrou libre",
-      "laiton/tes-2.png": "Té écrou libre 45°",
-      "laiton/tetine-femelle.png": "Tétine femelle",
-      "laiton/tetine-male.png": "Tétine mâle",
-
-      /* =======================
-         BICONES
-      ======================= */
-      "bicones/coude-femelle.png": "Coude femelle",
-      "bicones/coude-ff.png": "Coude femelle / femelle",
-      "bicones/coude-male.png": "Coude mâle",
-      "bicones/manchon.png": "Manchon",
-      "bicones/manchon-reduit.png": "Manchon réduit",
-      "bicones/rac-femelle.png": "Raccord femelle",
-      "bicones/rac-male.png": "Raccord mâle",
-      "bicones/te-egal.png": "Té égal",
-
-      /* =======================
-         PUSH
-      ======================= */
-      "push/bague-de-montage.png": "Bague de montage",
-      "push/bouchon.png": "Bouchon",
-      "push/coude-egal.png": "Coude égal",
-      "push/coude-femelle-el.png": "Coude femelle écrou libre",
-      "push/coude-male.png": "Coude mâle",
-      "push/culasse.png": "Culasse",
-      "push/insert.png": "Insert",
-      "push/jonction-reduite.png": "Jonction réduite",
-      "push/manchon.png": "Manchon",
-      "push/rac-femelle-el.png": "Raccord femelle écrou libre",
-      "push/rac-male.png": "Raccord mâle",
-      "push/te-egal.png": "Té égal",
-      "push/te-femelle.png": "Té femelle",
-      "push/te-male.png": "Té mâle",
-      "push/te-reduit.png": "Té réduit",
-      "push/vanne-ecrou-libre.png": "Vanne écrou libre",
-
-      /* =======================
-         PEX / ALPEX
-      ======================= */
-      "pex/bouchon.png": "Bouchon",
-      "pex/coude-f-el.png": "Coude femelle écrou libre",
-      "pex/coude-femelle.png": "Coude femelle",
-      "pex/coude-male.png": "Coude mâle",
-      "pex/culasse-doucle.png": "Culasse double",
-      "pex/culasse-simple.png": "Culasse simple",
-      "pex/manchon.png": "Manchon",
-      "pex/raccord-f-el.png": "Raccord femelle écrou libre",
-      "pex/raccord-femelle.png": "Raccord femelle",
-      "pex/raccord-male.png": "Raccord mâle",
-      "pex/te-femelle.png": "Té femelle",
-      "pex/te-male.png": "Té mâle",
-      "pex/te-reduit.png": "Té réduit",
-      "pex/te.png": "Té",
-      "pex/vanne.png": "Vanne",
-
-      /* =======================
-         PEX À SERTIR
-      ======================= */
-      "pex-a-sertir/bouchon.png": "Bouchon",
-      "pex-a-sertir/coude-egal.png": "Coude égal",
-      "pex-a-sertir/coude-femelle-el.png": "Coude femelle écrou libre",
-      "pex-a-sertir/coude-femelle.png": "Coude femelle",
-      "pex-a-sertir/coude-male.png": "Coude mâle",
-      "pex-a-sertir/culasse-double.png": "Culasse double",
-      "pex-a-sertir/culasse-simple.png": "Culasse simple",
-      "pex-a-sertir/manchon.png": "Manchon",
-      "pex-a-sertir/rac-femelle-el.png": "Raccord femelle écrou libre",
-      "pex-a-sertir/raccord-femelle.png": "Raccord femelle",
-      "pex-a-sertir/raccord-male.png": "Raccord mâle",
-      "pex-a-sertir/te-egal.png": "Té égal",
-      "pex-a-sertir/te-femelle.png": "Té femelle",
-      "pex-a-sertir/te-male.png": "Té mâle",
-      "pex-a-sertir/te-reduit.png": "Té réduit",
-
-      /* =======================
-         COLLECTEURS
-      ======================= */
-      "collecteurs/collecteur-2-bleu.png": "Collecteur 2 sorties bleu",
-      "collecteurs/collecteur-2-rouge.png": "Collecteur 2 sorties rouge",
-      "collecteurs/collecteur-3-bleu.png": "Collecteur 3 sorties bleu",
-      "collecteurs/collecteur-3-rouge.png": "Collecteur 3 sorties rouge",
-      "collecteurs/collecteur-4-bleu.png": "Collecteur 4 sorties bleu",
-      "collecteurs/collecteur-4-rouge.png": "Collecteur 4 sorties rouge",
-      "collecteurs/collecteur-5-bleu.png": "Collecteur 5 sorties bleu",
-      "collecteurs/collecteur-5-rouge.png": "Collecteur 5 sorties rouge",
-      "collecteurs/collecteur-6-bleu.png": "Collecteur 6 sorties bleu",
-      "collecteurs/collecteur-6-rouge.png": "Collecteur 6 sorties rouge",
-
-      /* =======================
-         HUOT
-      ======================= */
-      "acc-tube-polyethylene/huot/coude.png": "Coude Huot",
-      "acc-tube-polyethylene/huot/manchon.png": "Manchon Huot",
-      "acc-tube-polyethylene/huot/rac-femelle.png": "Raccord femelle Huot",
-      "acc-tube-polyethylene/huot/rac-male.png": "Raccord mâle Huot",
-      "acc-tube-polyethylene/huot/te.png": "Té Huot",
-
-      /* =======================
-         REXUO
-      ======================= */
-      "acc-tube-polyethylene/rexuo/coude.png": "Coude Rexuo",
-      "acc-tube-polyethylene/rexuo/manchon.png": "Manchon Rexuo",
-      "acc-tube-polyethylene/rexuo/rac-femelle.png": "Raccord femelle Rexuo",
-      "acc-tube-polyethylene/rexuo/rac-male.png": "Raccord mâle Rexuo",
-      "acc-tube-polyethylene/rexuo/te.png": "Té Rexuo",
-
-      /* =======================
-         PLASSON
-      ======================= */
-      "acc-tube-polyethylene/plasson/coude.png": "Coude Plasson",
-      "acc-tube-polyethylene/plasson/manchon.png": "Manchon Plasson",
-      "acc-tube-polyethylene/plasson/rac-femelle.png": "Raccord femelle Plasson",
-      "acc-tube-polyethylene/plasson/rac-male.png": "Raccord mâle Plasson",
-      "acc-tube-polyethylene/plasson/te.png": "Té Plasson",
-
-
-      /* =======================
-         GEKA
-      ======================= */
-      "geka/rac-geka-F.png": "Raccord Geka femelle",
-      "geka/rac-geka-M.png": "Raccord Geka mâle",
-      "geka/rac-geka-T.png": "Raccord Geka en T",
-
-      /* =======================
-         TUBE ALPEX
-      ======================= */
-      "tube-alpex/Tube-Alpex.png": "Tube Alpex",
-      "tube-alpex/Tube-Alpex-isolé-rouge.png": "Tube Alpex isolé rouge",
-      "tube-alpex/Tube-Alpex-isolé-bleu.png": "Tube Alpex isolé bleu",
-      "tube-alpex/Tube-Alpex-gaine-rouge.png": "Tube Alpex gainé rouge",
-      "tube-alpex/Tube-Alpex-gaine-bleue.png": "Tube Alpex gainé bleu"
+      "levis/Amb.lak-sat.jpg": "Ambiance laque satin",
+      "levis/Amb.lak.mat.jpg": "Ambiance laque mat",
+      "levis/Amb.mur-extra-mat.jpg": "Ambiance mur extra mat",
+      "levis/Amb.mur-metallic.jpg": "Ambiance mur metallic",
+      "levis/Amb.mur-satin.jpg": "Ambiance mur satin",
+      "levis/Duo-sat-mix.jpg": "Duo sat mix",
+      "levis/Easyclean-cuisine-sdb-mat.jpg": "Easyclean cuisine/sdb mat",
+      "levis/Easyclean-cuisine-sdb-sat.jpg": "Easyclean cuisine/sdb sat",
+      "levis/Easyclean-satin.jpg": "Easyclean satin",
+      "levis/Expert-mur.jpg": "Expert mur",
+      "levis/Facade-exp-levis-mix.png": "Façade (mix)",
+      "levis/Ferro-decor.jpg": "Ferro décor",
+      "levis/Lak-exp-high-gloss.png": "Laque high gloss",
+      "levis/Lak-exp-sat.jpg": "Laque exp satin",
+      "levis/Lak-rapide-exter.jpg": "Laque rapide extérieur",
+      "levis/Lak-reg-sat.jpg": "Laque rég satin",
+      "levis/Levis-floor-regul.jpg": "Levis floor regul"
     };
 
-    /** Options taille (fallback uniquement si pas de tailles dans l’Excel) */
+    /** Tailles “fallback” (si l’Excel n’a pas encore de tailles) */
     const CAT_SIZES = {
-      "a-souder": ["3/8", "1/2", "3/4"],
-
-      "acc-tube-polyethylene/huot": [
-        "1/2 normal", "1/2 renforcé",
-        "3/4 normal", "3/4 renforcé",
-        "4/4 normal", "4/4 renforcé"
-      ],
-
-      "acc-tube-polyethylene/plasson": ["Ø25", "Ø32"],
-      "acc-tube-polyethylene/rexuo": ["Ø25", "Ø32"],
-
-      "bicones": ["3/8", "1/2", "3/4", "4/4", "5/4"],
-      "laiton": ["3/8", "1/2", "3/4", "4/4", "5/4"],
-
-      "collecteurs": [
-        "3/4-2", "3/4-3", "3/4-4", "3/4-5", "3/4-6",
-        "4/4-2", "4/4-5"
-      ],
-
-      "geka": ["1/2", "3/4"],
-
-      "pex-a-sertir": ["Ø16", "Ø20", "Ø26"],
-      "pex": ["Ø16", "Ø20", "Ø26"],
-      "push": ["Ø16", "Ø20"],
-
-      /* ✅ NOUVEAU : Tube Alpex (fallback "vide" si pas d'Excel) */
-      "tube-alpex": ["16", "20", "26"]
+      "levis": ["1L", "2.5L", "5L", "10L"]
     };
 
-    const MALE_FEM_SIZES = ["1/2", "3/4"];
-    function isMaleFem(file) {
-      const f = file.toLowerCase();
-      return f.includes("male") || f.includes("femelle");
-    }
-    function getSizeOptions(cat, file) {
-      if ((cat === "pex-a-sertir" || cat === "pex" || cat === "push") && isMaleFem(file)) return MALE_FEM_SIZES;
-      return CAT_SIZES[cat] || [""];
-    }
+    /** Boutons catégories (ordre + libellés) */
+    const CATEGORY_UI = [
+      { id: "levis", label: "Levis" }
+      // Tu ajouteras plus tard :
+      // { id: "primaires", label: "Primaires" },
+      // { id: "murs", label: "Murs" },
+      // { id: "bois", label: "Bois" },
+      // etc.
+    ];
+
+    /** Icônes (optionnel). Mets des images dans vignettes-boutons/ si tu veux. */
+    const CAT_ICONS = {
+      "levis": "vignettes-boutons/levis.png"
+    };
+
+    /* =========================
+       2) PRIX / STOCK (inchangé)
+       ========================= */
 
     const PRICE_MANIFEST_URL = "prix/manifest.json";
-
-    /** Map prix: clé = "path|taille" => prix_tvac */
     let PRICE_MAP = Object.create(null);
-
-    /** ✅ Map stock: clé = "path|taille" => disponible (nombre)
-        Règle: vide = 0, <= 0 rupture, > 0 en stock
-    */
     let STOCK_MAP = Object.create(null);
-
-    /** Index tailles disponibles par article (dérivé des fichiers prix) */
     let SIZES_BY_PATH = Object.create(null);
 
     // UI
@@ -298,167 +112,40 @@
     const catButtons = document.getElementById("catButtons");
     const catSelect = document.getElementById("catSelect");
 
-    const CAT_ICONS = {
-      "a-souder": "vignettes-boutons/a-souder.png",
-
-      "laiton": "vignettes-boutons/laiton.png",
-      "bicones": "vignettes-boutons/bicone.png",
-      "push": "vignettes-boutons/push.png",
-      "collecteurs": "vignettes-boutons/collecteur.png",
-
-      "acc-tube-polyethylene/huot": "vignettes-boutons/huot.png",
-      "acc-tube-polyethylene/rexuo": "vignettes-boutons/rexuo.png",
-      "acc-tube-polyethylene/plasson": "vignettes-boutons/plasson.png",
-
-      "geka": "vignettes-boutons/geka.png",
-      "pex": "vignettes-boutons/pex.png",
-      "pex-a-sertir": "vignettes-boutons/pex-a-sertir.png",
-
-      "tube-alpex": "vignettes-boutons/Tube-Alpex.png"
-    };
-
-    ;
-
-    /** Ordre + libellés demandés */
-    const CATEGORY_UI = [
-      { id: "laiton", label: "Laiton" },
-      { id: "bicones", label: "Bicône" },
-      { id: "push", label: "Push" },
-      { id: "collecteurs", label: "Collecteur" },
-      { id: "acc-tube-polyethylene/huot", label: "Huot" },
-      { id: "acc-tube-polyethylene/rexuo", label: "Rexuo" },
-      { id: "acc-tube-polyethylene/plasson", label: "Plasson" },
-      { id: "geka", label: "Geka" },
-      { id: "pex", label: "Alpex" },
-      { id: "pex-a-sertir", label: "Alpex à sertir" },
-      { id: "tube-alpex", label: "Tube Alpex" },
-    ];
-
-    /** catégories dispo (en respectant HIDE_A_SOUDER) */
-    const allowedCats = new Set(Object.keys(IMAGES).filter(cat => {
-      if (HIDE_A_SOUDER && cat === "a-souder") return false;
-      return true;
-    }));
-
-    const categories = CATEGORY_UI.filter(c => allowedCats.has(c.id));
-    let activeCat = categories[0]?.id || "__none__";
-
-    function buildCatButtons() {
-      catButtons.innerHTML = categories.map(c => {
-        const icon = CAT_ICONS[c.id];
-
-        return `
-      <button class="catBtn ${c.id === activeCat ? 'active' : ''}"
-              data-cat="${c.id}" type="button">
-        ${icon ? `
-          <div class="catIcon">
-            <img src="${icon}" alt="">
-          </div>
-        ` : ``}
-        <span>${c.label}</span>
-      </button>
-    `;
-      }).join("");
-
-      catButtons.querySelectorAll("button[data-cat]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          activeCat = btn.dataset.cat;
-          syncCategoryUI();
-          render();
-        });
-      });
-    }
-
-
-    function buildCatSelect() {
-      catSelect.innerHTML = categories
-        .map(c => `<option value="${c.id}">${c.label}</option>`)
-        .join("");
-
-      catSelect.addEventListener("change", () => {
-        activeCat = catSelect.value;
-        syncCategoryUI();
-        render();
-      });
-    }
-
-    function syncCategoryUI() {
-      if (catSelect) catSelect.value = activeCat;
-
-      document.querySelectorAll("#catButtons .catBtn").forEach(b => {
-        b.classList.toggle("active", b.dataset.cat === activeCat);
-      });
-
-      fitCategoryButtons();
-    }
-
-    function fitCategoryButtons() {
-      if (!catButtons) return;
-      if (getComputedStyle(catButtons).display === "none") return;
-
-      const root = document.documentElement;
-
-      const presets = [
-        { font: 12, py: 6, px: 10, gap: 6 },
-        { font: 11, py: 5, px: 9, gap: 6 },
-        { font: 10, py: 5, px: 8, gap: 5 },
-        { font: 9, py: 4, px: 7, gap: 5 }
-      ];
-
-      const apply = (p) => {
-        root.style.setProperty("--cat-font", p.font + "px");
-        root.style.setProperty("--cat-py", p.py + "px");
-        root.style.setProperty("--cat-px", p.px + "px");
-        root.style.setProperty("--cat-gap", p.gap + "px");
-      };
-
-      const fits = () => catButtons.scrollWidth <= catButtons.clientWidth + 1;
-
-      catButtons.style.overflowX = "hidden";
-
-      apply(presets[0]);
-      if (fits()) return;
-
-      for (let i = 1; i < presets.length; i++) {
-        apply(presets[i]);
-        if (fits()) return;
-      }
-
-      catButtons.style.overflowX = "auto";
-      catButtons.style.webkitOverflowScrolling = "touch";
-    }
-
-    function normalizeSize(s) {
-      return String(s || "").trim();
-    }
-
-    function getKey(path, taille) {
-      return `${path}|${normalizeSize(taille)}`;
-    }
+    function normalizeSize(s) { return String(s || "").trim(); }
+    function getKey(path, taille) { return `${path}|${normalizeSize(taille)}`; }
 
     function stockLabelFor(key) {
-      // règle: si pas de valeur => 0 => rupture
       const v = Number(STOCK_MAP[key]);
       return (v > 0) ? "✅ En stock" : "⚠️ Rupture";
     }
 
+    function getSizeOptions(cat, file) {
+      return CAT_SIZES[cat] || [""];
+    }
+
+    function getStoredSize(key, fallback) {
+      try {
+        const v = localStorage.getItem("size:" + key);
+        return v ? v : fallback;
+      } catch { return fallback; }
+    }
+    function setStoredSize(key, val) {
+      try { localStorage.setItem("size:" + key, val); } catch {}
+    }
+
     function pickInitialSize(pathKey, options) {
-      // 1) Respecte la taille déjà choisie, MAIS seulement si elle est en stock
       const stored = getStoredSize(pathKey, "");
       if (stored && options.includes(stored)) {
         const ks = getKey(pathKey, stored);
         const vs = Number(STOCK_MAP[ks]);
-        if (vs > 0) return stored; // ok, on garde le choix utilisateur
+        if (vs > 0) return stored;
       }
-
-      // 2) Sinon: prend la 1ère taille EN STOCK
       for (const opt of options) {
         const k = getKey(pathKey, opt);
         const v = Number(STOCK_MAP[k]);
         if (v > 0) return opt;
       }
-
-      // 3) Sinon: tout est en rupture -> fallback 1ère option
       return options[0] || "";
     }
 
@@ -487,26 +174,16 @@
         const taille = normalizeSize(r.taille ?? r.Taille ?? r.TAILLE ?? "");
         let price = r.prix_tvac ?? r.Prix_TVAC ?? r.PRIX_TVAC ?? r.prix ?? r.Prix ?? "";
 
-        // ✅ stock (vide = 0)
         let stockRaw =
-          r.disponible ??
-          r.Disponible ??
-          r.DISPO ??
-          r.dispo ??
-          r.stock ??
-          r.Stock ??
-          "";
+          r.disponible ?? r.Disponible ?? r.DISPO ?? r.dispo ?? r.stock ?? r.Stock ?? "";
 
         let stockVal = String(stockRaw).trim() === ""
           ? 0
           : Number(String(stockRaw).replace(",", "."));
-
         if (!Number.isFinite(stockVal)) stockVal = 0;
 
         if (!path) continue;
-
         path = path.replaceAll("\\", "/").replace(/^\.?\//, "");
-        if (path.startsWith("collecteur/")) path = "collecteurs/" + path.slice("collecteur/".length);
 
         if (typeof price === "string") price = price.replace(",", ".").trim();
         const num = Number(price);
@@ -514,7 +191,7 @@
         if (Number.isFinite(num)) {
           const k = getKey(path, taille);
           map[k] = num;
-          stock[k] = stockVal; // stock piloté par excel (vide => 0)
+          stock[k] = stockVal;
         }
       }
 
@@ -523,31 +200,20 @@
 
     function buildSizesByPath(priceMap) {
       const idx = Object.create(null);
-
       for (const k of Object.keys(priceMap)) {
         const sep = k.indexOf("|");
         if (sep === -1) continue;
-
         const pathKey = k.slice(0, sep);
         const taille = normalizeSize(k.slice(sep + 1));
         if (!pathKey || !taille) continue;
-
         if (/\.(png|jpg|jpeg|webp)$/i.test(taille)) continue;
-
         (idx[pathKey] ||= []).push(taille);
       }
-
       const collator = new Intl.Collator("fr", { numeric: true, sensitivity: "base" });
-
       for (const p of Object.keys(idx)) {
         const unique = Array.from(new Set(idx[p]));
-        const allNumeric = unique.every(v => /^\d+(?:[.,]\d+)?$/.test(String(v).trim()));
-
-        idx[p] = allNumeric
-          ? unique.sort((a, b) => Number(String(a).replace(",", ".")) - Number(String(b).replace(",", ".")))
-          : unique.sort((a, b) => collator.compare(String(a), String(b)));
+        idx[p] = unique.sort((a, b) => collator.compare(String(a), String(b)));
       }
-
       return idx;
     }
 
@@ -578,7 +244,7 @@
         PRICE_MAP = Object.create(null);
         STOCK_MAP = Object.create(null);
         SIZES_BY_PATH = Object.create(null);
-        console.error(e);
+        console.warn("Prix non chargés (OK tant que le manifest n'existe pas):", e);
       }
     }
 
@@ -587,30 +253,55 @@
       return (Math.round(v * 100) / 100).toFixed(2);
     }
 
-    function getStoredSize(key, fallback) {
-      try {
-        const v = localStorage.getItem("size:" + key);
-        return v ? v : fallback;
-      } catch { return fallback; }
+    const categories = CATEGORY_UI.filter(c => IMAGES[c.id]);
+    let activeCat = categories[0]?.id || "__none__";
+
+    function buildCatButtons() {
+      catButtons.innerHTML = categories.map(c => {
+        const icon = CAT_ICONS[c.id];
+        return `
+          <button class="catBtn ${c.id === activeCat ? 'active' : ''}" data-cat="${c.id}" type="button">
+            ${icon ? `<div class="catIcon"><img src="${icon}" alt=""></div>` : ``}
+            <span>${c.label}</span>
+          </button>
+        `;
+      }).join("");
+
+      catButtons.querySelectorAll("button[data-cat]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeCat = btn.dataset.cat;
+          syncCategoryUI();
+          render();
+        });
+      });
     }
-    function setStoredSize(key, val) {
-      try { localStorage.setItem("size:" + key, val); } catch { }
+
+    function buildCatSelect() {
+      catSelect.innerHTML = categories.map(c => `<option value="${c.id}">${c.label}</option>`).join("");
+      catSelect.addEventListener("change", () => {
+        activeCat = catSelect.value;
+        syncCategoryUI();
+        render();
+      });
+    }
+
+    function syncCategoryUI() {
+      if (catSelect) catSelect.value = activeCat;
+      document.querySelectorAll("#catButtons .catBtn").forEach(b => {
+        b.classList.toggle("active", b.dataset.cat === activeCat);
+      });
     }
 
     function render() {
-      const query = "";
-
       const cat = activeCat;
       if (!cat || !IMAGES[cat]) {
         app.innerHTML = `<p class="muted">Aucune catégorie à afficher.</p>`;
-        sendHeightSoon();
         return;
       }
 
-      const files = (IMAGES[cat] || []).filter(f => f.toLowerCase().includes(query));
+      const files = IMAGES[cat] || [];
       if (!files.length) {
-        app.innerHTML = `<p class="muted">Aucune image à afficher.</p>`;
-        sendHeightSoon();
+        app.innerHTML = `<p class="muted">Aucun produit à afficher.</p>`;
         return;
       }
 
@@ -622,19 +313,13 @@
 
         const label = (DISPLAY_NAMES[pathKey] ?? f)
           .replace(/\.(png|jpg|jpeg|webp)$/i, "")
-          .replace(/-/g, " ");
+          .replace(/[-_]/g, " ");
 
-        let options = (SIZES_BY_PATH[pathKey] && SIZES_BY_PATH[pathKey].length)
+        const options = (SIZES_BY_PATH[pathKey] && SIZES_BY_PATH[pathKey].length)
           ? SIZES_BY_PATH[pathKey]
           : getSizeOptions(cat, f);
 
-        let currentSize = pickInitialSize(pathKey, options);
-
-        // sécurité si l'Excel a changé
-        if (currentSize && !options.includes(currentSize)) {
-          currentSize = options[0] || "";
-        }
-
+        const currentSize = pickInitialSize(pathKey, options);
         setStoredSize(pathKey, currentSize);
 
         const k = getKey(pathKey, currentSize);
@@ -645,36 +330,35 @@
         const stockId = "st_" + btoa(pathKey).replace(/=+/g, '');
 
         html += `
-      <figure>
-        <figcaption>${label}</figcaption>
+          <figure>
+            <figcaption>${label}</figcaption>
 
-        <a class="thumb" href="${src}" target="_blank" rel="noopener">
-          <img src="${src}" alt="${label}"
-            onerror="this.style.display='none'; this.closest('figure').insertAdjacentHTML('beforeend','<div class=\\'missing\\'>❌ Introuvable : ${src}</div>')">
-        </a>
+            <a class="thumb" href="${src}" target="_blank" rel="noopener">
+              <img src="${src}" alt="${label}"
+                onerror="this.style.display='none'; this.closest('figure').insertAdjacentHTML('beforeend','<div class=\\'missing\\'>❌ Introuvable : ${src}</div>')">
+            </a>
 
-        <div class="stock" id="${stockId}">${stockText}</div>
+            <div class="stock" id="${stockId}">${stockText}</div>
 
-        <div class="size">
-          <select id="${selectId}" data-path="${pathKey}" data-stock-id="${stockId}">
-            ${options.map(o => `<option value="${o}" ${o === currentSize ? 'selected' : ''}>${o}</option>`).join("")}
-          </select>
-        </div>
-<div class="price">
-  <div class="price-label">Tvac</div>
-  ${price !== undefined
-            ? `<div class="price-amount">
-         <span class="int">${formatPrice(price).split(".")[0]}</span>
-         <span class="dec">${formatPrice(price).split(".")[1] || "00"}</span>
-         <span class="eur">€</span>
-       </div>`
-            : `<div class="price-amount muted">—</div>`
-          }
-</div>
+            <div class="size">
+              <select id="${selectId}" data-path="${pathKey}" data-stock-id="${stockId}">
+                ${options.map(o => `<option value="${o}" ${o === currentSize ? 'selected' : ''}>${o}</option>`).join("")}
+              </select>
+            </div>
 
-        
-      </figure>
-    `;
+            <div class="price">
+              <div class="price-label">Tvac</div>
+              ${price !== undefined
+                ? `<div class="price-amount">
+                     <span class="int">${formatPrice(price).split(".")[0]}</span>
+                     <span class="dec">${formatPrice(price).split(".")[1] || "00"}</span>
+                     <span class="eur">€</span>
+                   </div>`
+                : `<div class="price-amount muted">—</div>`
+              }
+            </div>
+          </figure>
+        `;
       }
 
       html += `</div>`;
@@ -687,87 +371,45 @@
           setStoredSize(pathKey, taille);
 
           const k = getKey(pathKey, taille);
-
-          // prix (mise à jour sans input)
           const price = PRICE_MAP[k];
+
           const figure = sel.closest("figure");
           const priceBox = figure ? figure.querySelector(".price") : null;
 
           if (priceBox) {
             if (price !== undefined) {
               const s = formatPrice(price);
-              const intPart = s.split(".")[0];
-              const decPart = s.split(".")[1] || "00";
-
+              const [intPart, decPart = "00"] = s.split(".");
               priceBox.innerHTML = `
-      <div class="price-label">Tvac</div>
-      <div class="price-amount">
-        <span class="int">${intPart}</span>
-        <span class="dec">${decPart}</span>
-        <span class="eur">€</span>
-      </div>
-    `;
+                <div class="price-label">Tvac</div>
+                <div class="price-amount">
+                  <span class="int">${intPart}</span>
+                  <span class="dec">${decPart}</span>
+                  <span class="eur">€</span>
+                </div>
+              `;
             } else {
               priceBox.innerHTML = `
-      <div class="price-label">Tvac</div>
-      <div class="price-amount muted">—</div>
-    `;
+                <div class="price-label">Tvac</div>
+                <div class="price-amount muted">—</div>
+              `;
             }
           }
 
-
-          // stock
           const stockId = sel.dataset.stockId;
           const st = document.getElementById(stockId);
           if (st) st.textContent = stockLabelFor(k);
-          sendHeightSoon();
-
         });
       });
-      sendHeightSoon();
     }
 
     (async function init() {
-      await loadPricesFromFolder();
+      await loadPricesFromFolder(); // OK même si pas encore de manifest
       buildCatButtons();
       buildCatSelect();
       syncCategoryUI();
       render();
-
-      window.addEventListener("resize", () => {
-        fitCategoryButtons();
-        sendHeightSoon();
-      });
-
     })();
   </script>
-
-  <script>
-    function sendHeight() {
-      const h = Math.max(
-        document.body ? document.body.scrollHeight : 0,
-        document.documentElement ? document.documentElement.scrollHeight : 0
-      );
-
-      if (window.parent !== window) {
-        window.parent.postMessage(
-          { type: "resize", height: h },
-          "*"
-        );
-      }
-    }
-
-    function sendHeightSoon() {
-      requestAnimationFrame(() => {
-        sendHeight();
-        setTimeout(sendHeight, 150);
-        setTimeout(sendHeight, 600);
-      });
-    }
-
-    window.addEventListener("load", sendHeightSoon);
-    window.addEventListener("resize", sendHeightSoon);
-  </script>
 </body>
-
 </html>
