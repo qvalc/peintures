@@ -95,7 +95,12 @@
         "nettoyant-wash-wax.png",
         "no-visible-huile.png",
         "vitrificateur-2-composants-acryl.png"
-      ]
+      ],
+
+      "cecil": [
+        "tx203.png"
+      ],
+
 
     };
 
@@ -197,7 +202,6 @@
       "levis/Lak-reg-sat.jpg": "pdf/levis-lak-reg-sat.pdf",
       "levis/Levis-floor-regul.jpg": "pdf/levis-floor-regul.pdf",
 
-
     };
 
     const CAT_SIZES = {
@@ -205,7 +209,8 @@
       "diessner": ["1L", "2.5L", "5L", "10L"],
       "sikkens": ["1L", "2.5L", "5L", "10L"],
       "v33": ["0.5L", "1L", "2.5L", "5L"],
-      "basin": ["1L", "2.5L", "5L", "10L"]
+      "basin": ["1L", "2.5L", "5L", "10L"],
+      "cecil": ["1L", "2.5L", "5L", "10L"],
     };
 
     const CATEGORY_UI = [
@@ -213,7 +218,8 @@
       { id: "diessner", label: "Diessner" },
       { id: "sikkens", label: "Sikkens" },
       { id: "v33", label: "V33" },
-      { id: "basin", label: "Basin" }
+      { id: "basin", label: "Basin" },
+      { id: "cecil", label: "Cecil" },
     ];
 
     const CAT_ICONS = {
@@ -221,13 +227,11 @@
       "diessner": "vignettes-boutons/diessner.png",
       "sikkens": "vignettes-boutons/sikkens.png",
       "v33": "vignettes-boutons/v33.png",
-      "basin": "vignettes-boutons/basin.png"
+      "basin": "vignettes-boutons/basin.png",
+      "cecil": "vignettes-boutons/cecil.png"
+
     };
 
-
-    /* =========================
-       2) PRIX / STOCK (inchangé)
-       ========================= */
 
     const PRICE_MANIFEST_URL = "prix/manifest.json";
     let PRICE_MAP = Object.create(null);
