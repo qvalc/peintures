@@ -525,3 +525,14 @@ header.top {
   padding: 1px;
   background: #fff;
 }
+
+.pdfTag{
+  font-size: 9px;
+  font-weight: 700;
+  background: #e9ecef;
+  color: #555;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 6px;
+  letter-spacing: .5px;
+}

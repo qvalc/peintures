@@ -682,11 +682,14 @@
         html += `
           <figure>
             <figcaption>
-             ${PRODUCT_PDFS[pathKey]
-            ? `<a href="${PRODUCT_PDFS[pathKey]}" target="_blank" rel="noopener" class="titleLink">${label}</a>`
+  ${PRODUCT_PDFS[pathKey]
+            ? `<a href="${PRODUCT_PDFS[pathKey]}" target="_blank" rel="noopener" class="titleLink">
+         ${label} <span class="pdfTag">PDF</span>
+       </a>`
             : label
           }
 </figcaption>
+
 
 
 
